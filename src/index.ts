@@ -1,15 +1,15 @@
 import "reflect-metadata";
-import * as express from "express";
+import express from "express";
 import { AppDataSource } from "./data-source";
 import * as bodyParser from "body-parser";
+import cors from "cors";
 import routes from "./routes";
-import * as cors from "cors";
 
 AppDataSource.initialize().then(async () => {
   const app = express();
 
-  app.use(cors()); // Adicione esta linha para permitir CORS
+  app.use(cors());
   app.use(bodyParser.json());
   app.use(routes);
-  app.listen(3333);
+  app.listen(process.env.PORT || 3333);
 });
