@@ -1,9 +1,14 @@
-import { Router, request, response, Request, Response } from 'express'
-import { createUsers, getUsers } from './controller/UserController'
-const routes = Router()
+import { Router } from "express";
+import { createReport, getReports } from "./controller/ReportController";
+import path from "path";
+import express from "express";
 
-routes.get('/users', getUsers)
+const routes = Router();
 
-routes.post('/users', createUsers)
+const uploadsPath = path.join(__dirname, "controller", "uploads");
+routes.use("/images", express.static(uploadsPath));
 
-export default routes
+routes.get("/reports", getReports);
+routes.post("/reports", createReport);
+
+export default routes;
