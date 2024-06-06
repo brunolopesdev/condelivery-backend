@@ -15,7 +15,15 @@ export const getReports = async (request: Request, response: Response) => {
 export const createReport = async (request: Request, response: Response) => {
   const form = new multiparty.Form();
 
-  form.uploadDir = path.resolve(__dirname, "uploads");
+  // Definir o diretório de upload como /tmp/uploads
+  const uploadDir = path.join("/tmp", "uploads");
+
+  // Certifique-se de que o diretório existe
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+
+  form.uploadDir = uploadDir;
 
   form.parse(request, async (err, fields, files) => {
     if (err) {
@@ -30,7 +38,7 @@ export const createReport = async (request: Request, response: Response) => {
       let imagePath = "";
 
       if (imageFile) {
-        const imagePathRelative = imageFile.path.replace(form.uploadDir, ""); 
+        const imagePathRelative = imageFile.path.replace(uploadDir, "");
         imagePath = imagePathRelative.replace(/\\/g, "/");
       }
 
