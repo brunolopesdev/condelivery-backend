@@ -6,7 +6,10 @@ import fs from "fs";
 
 const routes = Router();
 
-const uploadsPath = path.join(__dirname, "src", "tmp", "uploads");
+const isVercel = process.env.VERCEL === "1";
+const uploadsPath = isVercel
+  ? "/tmp/uploads"
+  : path.join(__dirname, "..", "tmp", "uploads");
 
 try {
   if (!fs.existsSync(uploadsPath)) {
