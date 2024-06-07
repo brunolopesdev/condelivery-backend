@@ -15,10 +15,8 @@ export const getReports = async (request: Request, response: Response) => {
 export const createReport = async (request: Request, response: Response) => {
   const form = new multiparty.Form();
 
-  // Definir o diretório de upload como /tmp/uploads
-  const uploadDir = path.join("/tmp", "uploads");
+  const uploadDir = path.join("src", "tmp", "uploads");
 
-  // Certifique-se de que o diretório existe
   if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
   }

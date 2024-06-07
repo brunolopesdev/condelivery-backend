@@ -6,9 +6,8 @@ import fs from "fs";
 
 const routes = Router();
 
-const uploadsPath = path.join("/tmp", "uploads");
+const uploadsPath = path.join("src", "tmp", "uploads");
 
-// Certifique-se de que o diretório de uploads existe
 if (!fs.existsSync(uploadsPath)) {
   fs.mkdirSync(uploadsPath, { recursive: true });
 }
