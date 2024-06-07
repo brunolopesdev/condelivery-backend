@@ -6,10 +6,17 @@ import fs from "fs";
 
 const routes = Router();
 
-const uploadsPath = path.join("src", "tmp", "uploads");
+const uploadsPath = path.join(__dirname, "src", "tmp", "uploads");
 
-if (!fs.existsSync(uploadsPath)) {
-  fs.mkdirSync(uploadsPath, { recursive: true });
+try {
+  if (!fs.existsSync(uploadsPath)) {
+    fs.mkdirSync(uploadsPath, { recursive: true });
+    console.log(`Directory created successfully: ${uploadsPath}`);
+  } else {
+    console.log(`Directory already exists: ${uploadsPath}`);
+  }
+} catch (error) {
+  console.error(`Error creating directory ${uploadsPath}:`, error);
 }
 
 routes.use("/images", express.static(uploadsPath));

@@ -15,7 +15,13 @@ export const getReports = async (request: Request, response: Response) => {
 export const createReport = async (request: Request, response: Response) => {
   const form = new multiparty.Form();
 
-  const uploadDir = path.join("src", "tmp", "uploads");
+  // Determine if running on Vercel by checking for Vercel-specific environment variables
+  const isVercel = process.env.VERCEL || false;
+
+  // Use /tmp directory for Vercel, local path for others
+  const uploadDir = isVercel
+    ? "/tmp/uploads"
+    : path.join(__dirname, "src", "tmp", "uploads");
 
   if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
@@ -36,7 +42,8 @@ export const createReport = async (request: Request, response: Response) => {
       let imagePath = "";
 
       if (imageFile) {
-        const imagePathRelative = imageFile.path.replace(uploadDir, "");
+        // Create a relative path for the image
+        const imagePathRelative = path.relative(uploadDir, imageFile.path);
         imagePath = imagePathRelative.replace(/\\/g, "/");
       }
 
