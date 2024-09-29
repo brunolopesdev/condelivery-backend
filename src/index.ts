@@ -19,12 +19,11 @@ const io = new Server(server, {
   },
 });
 
-
 export const emitNotification = (notification: {
   mensagem: string;
   data: string;
   id: number;
-  morador: Morador
+  morador: Morador;
 }) => {
   io.to(`user_${notification.morador.id}`).emit(
     "new_notification",
@@ -32,6 +31,7 @@ export const emitNotification = (notification: {
   );
 };
 
+// Handle socket connections
 io.on("connection", (socket) => {
   const userId = socket.handshake.query.userId;
   if (userId) {
@@ -43,12 +43,24 @@ io.on("connection", (socket) => {
   });
 });
 
+// This function will be the entry point for Vercel's serverless functions
+export default async function handler(req, res) {
+  // Initialize your database connection if not already initialized
+  if (!AppDataSource.isInitialized) {
+    try {
+      await AppDataSource.initialize();
+      console.log("Data Source has been initialized!");
+    } catch (err) {
+      console.error("Error during Data Source initialization", err);
+      return res.status(500).json({ error: "Database connection error" });
+    }
+  }
 
-AppDataSource.initialize()
-  .then(() => {
-    console.log("Data Source has been initialized!");
-    server.listen(3000, () => console.log("Servidor rodando na porta 3000"));
-  })
-  .catch((err) => {
-    console.error("Error during Data Source initialization", err);
-  });
+  // Handle HTTP requests
+  if (req.method === "GET") {
+    return res.status(200).json({ message: "Hello from your API!" });
+  }
+
+  // You can handle other HTTP methods as needed
+  return res.status(405).json({ error: "Method not allowed" });
+}
