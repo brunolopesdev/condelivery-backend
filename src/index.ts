@@ -11,7 +11,6 @@ app.use(express.json());
 app.use(routes);
 
 const server = http.createServer(app);
-
 const io = new Server(server, {
   cors: {
     origin: "*",
@@ -31,7 +30,6 @@ export const emitNotification = (notification: {
   );
 };
 
-// Handle socket connections
 io.on("connection", (socket) => {
   const userId = socket.handshake.query.userId;
   if (userId) {
@@ -43,9 +41,7 @@ io.on("connection", (socket) => {
   });
 });
 
-// This function will be the entry point for Vercel's serverless functions
 export default async function handler(req, res) {
-  // Initialize your database connection if not already initialized
   if (!AppDataSource.isInitialized) {
     try {
       await AppDataSource.initialize();
@@ -56,11 +52,5 @@ export default async function handler(req, res) {
     }
   }
 
-  // Handle HTTP requests
-  if (req.method === "GET") {
-    return res.status(200).json({ message: "Hello from your API!" });
-  }
-
-  // You can handle other HTTP methods as needed
-  return res.status(405).json({ error: "Method not allowed" });
+  app(req, res);
 }
