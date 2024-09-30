@@ -9,6 +9,7 @@ import { IntegracaoController } from "./controller/IntegracaoController";
 import { NotificacaoController } from "./controller/NotificacaoController";
 import { CondominioController } from "./controller/CondominioController";
 import { IFoodController } from "./controller/IFoodController";
+import { verifyToken } from "./middleware/verifyToken";
 
 const routes = Router();
 
@@ -24,6 +25,11 @@ const condominioController = new CondominioController();
 const ifoodController = new IFoodController();
 
 routes.post("/login", usuarioController.login.bind(usuarioController));
+routes.get(
+  "/verify-token",
+  verifyToken,
+  usuarioController.verifyToken.bind(usuarioController)
+);
 
 routes.get("/usuarios", usuarioController.getAll.bind(usuarioController));
 routes.get("/usuarios/:id", usuarioController.getById.bind(usuarioController));

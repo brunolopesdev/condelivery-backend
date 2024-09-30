@@ -82,6 +82,33 @@ export class UsuarioController extends BaseController<Usuario> {
     }
   }
 
+  async verifyToken(req: Request, res: Response): Promise<Response> {
+    try {
+      const user = await this.repository.findOne({
+        where: { id: req.userId }, // Obtem o id do usuário a partir do token decodificado
+        relations: ["moradores", "colaborador"],
+      });
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const { password: _, ...userData } = user;
+      const morador = user.moradores.length > 0 ? user.moradores[0].id : null;
+
+      return res.json({
+        message: "Token is valid",
+        user: {
+          ...userData,
+          morador: user.moradores,
+          moradorId: morador,
+        },
+      });
+    } catch (error) {
+      return res.status(500).json({ message: "Error verifying token", error });
+    }
+  }
+
   async getAll(req: Request, res: Response): Promise<Response> {
     try {
       const users = await this.repository.find({
